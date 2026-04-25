@@ -15,9 +15,8 @@ To roll out a change: push to the default branch. Every Pi picks it up within
 
 ## One-time setup per Pi
 
-Assumes Raspberry Pi OS Lite (Bookworm or newer) and that you've added a
-**deploy key** for this repo to `/root/.ssh/` so unattended `git fetch` works
-from cron.
+Assumes Raspberry Pi OS Lite (Bookworm or newer). The repo is public, so
+`git fetch` over HTTPS works unattended without credentials.
 
 ### 1. Install cinc-client
 
@@ -32,7 +31,7 @@ curl -L https://omnitruck.cinc.sh/install.sh | sudo bash -s -- -v 18
 ### 2. Clone this repo
 
 ```bash
-sudo git clone git@github.com:jasonwbarnett/barnett-home.git /opt/barnett-home
+sudo git clone https://github.com/jasonwbarnett/barnett-home.git /opt/barnett-home
 ```
 
 The path `/opt/barnett-home` is what the wrapper below assumes — change both
