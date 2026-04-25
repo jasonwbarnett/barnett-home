@@ -1,7 +1,8 @@
 # barnett-home
 
-Chef cookbooks for home-network hosts. Currently contains `adguard_home_pi/`,
-which prepares a Raspberry Pi OS Lite host to run AdGuard Home.
+Chef cookbooks for home-network hosts. All cookbooks live under `cookbooks/`.
+Currently contains `cookbooks/adguard_home_pi/`, which prepares a Raspberry Pi
+OS Lite host and installs AdGuard Home on it.
 
 ## How it works
 
@@ -42,15 +43,15 @@ together if you use a different location.
 ```bash
 sudo install -d -m 0755 /etc/cinc /var/log/cinc
 sudo tee /etc/cinc/client.rb >/dev/null <<'EOF'
-cookbook_path '/opt/barnett-home'
+cookbook_path '/opt/barnett-home/cookbooks'
 local_mode    true
 log_level     :info
 log_location  '/var/log/cinc/client.log'
 EOF
 ```
 
-`cookbook_path` is the **parent** directory of the cookbook, not the cookbook
-itself — cinc finds `adguard_home_pi/` underneath it by name.
+`cookbook_path` points at the **parent** directory of the cookbooks, not at a
+cookbook itself — cinc finds `adguard_home_pi/` inside `cookbooks/` by name.
 
 ### 4. Drop in the converge wrapper
 
@@ -97,7 +98,11 @@ sudo /usr/local/sbin/cinc-converge.sh
 sudo reboot
 ```
 
-After the reboot, cron takes over.
+After the reboot, cron takes over. AdGuard Home will be running and listening
+on its first-run setup port — browse to `http://<pi-ip>:3000` to complete
+initial configuration (admin user, listen interfaces, upstream DNS).
+Subsequent AdGuard Home version upgrades happen via its built-in updater in
+the web UI.
 
 ## Updating
 
