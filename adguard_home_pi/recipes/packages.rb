@@ -2,7 +2,7 @@ apt_update 'update apt cache' do
   action :periodic
 end
 
-package node['barnett_home']['packages'] + %w(unattended-upgrades)
+package node['adguard_home_pi']['packages'] + %w(unattended-upgrades)
 
 # `dpkg-reconfigure unattended-upgrades` non-interactively just writes this
 # file to enable the daily timers. Managing the file directly is idempotent

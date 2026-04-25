@@ -11,8 +11,8 @@ file '/etc/systemd/journald.conf.d/volatile.conf' do
   mode  '0644'
   content <<~CONF
     [Journal]
-    Storage=#{node['barnett_home']['journald']['storage']}
-    RuntimeMaxUse=#{node['barnett_home']['journald']['runtime_max_use']}
+    Storage=#{node['adguard_home_pi']['journald']['storage']}
+    RuntimeMaxUse=#{node['adguard_home_pi']['journald']['runtime_max_use']}
   CONF
   notifies :restart, 'service[systemd-journald]', :immediately
 end

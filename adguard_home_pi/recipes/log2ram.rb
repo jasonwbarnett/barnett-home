@@ -1,4 +1,4 @@
-version  = node['barnett_home']['log2ram']['version']
+version  = node['adguard_home_pi']['log2ram']['version']
 tarball  = "#{Chef::Config[:file_cache_path]}/log2ram-#{version}.tar.gz"
 src_dir  = "#{Chef::Config[:file_cache_path]}/log2ram-#{version}"
 
@@ -23,9 +23,9 @@ execute 'install log2ram' do
 end
 
 desired_log2ram = {
-  'SIZE'      => node['barnett_home']['log2ram']['size'],
-  'USE_RSYNC' => node['barnett_home']['log2ram']['use_rsync'].to_s,
-  'MAIL'      => node['barnett_home']['log2ram']['mail'].to_s,
+  'SIZE'      => node['adguard_home_pi']['log2ram']['size'],
+  'USE_RSYNC' => node['adguard_home_pi']['log2ram']['use_rsync'].to_s,
+  'MAIL'      => node['adguard_home_pi']['log2ram']['mail'].to_s,
 }
 
 ruby_block 'configure /etc/log2ram.conf' do

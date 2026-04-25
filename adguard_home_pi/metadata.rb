@@ -1,8 +1,8 @@
-name             'barnett_home'
+name             'adguard_home_pi'
 maintainer       'Cameron'
 maintainer_email 'cameron@legalpoint.io'
 license          'MIT'
-description      'Configures the barnett-home host: base packages, unattended-upgrades, volatile journald, log2ram, and swap disable.'
+description      'Prepares a Raspberry Pi OS Lite host to run AdGuard Home: base packages, unattended-upgrades, volatile journald, log2ram, and swap disable.'
 version          '0.1.0'
 chef_version     '>= 17.0'
 
