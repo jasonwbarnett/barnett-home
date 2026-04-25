@@ -104,6 +104,44 @@ initial configuration (admin user, listen interfaces, upstream DNS).
 Subsequent AdGuard Home version upgrades happen via its built-in updater in
 the web UI.
 
+### 7. Connect to Tailscale (optional)
+
+The cookbook installs Tailscale and starts `tailscaled`, but doesn't
+authenticate the device — that's interactive. Bring the Pi onto your tailnet:
+
+```bash
+sudo tailscale up
+# follow the URL it prints to authenticate
+```
+
+To expose the AdGuard Home web UI over HTTPS through your tailnet (no cert
+wrangling, no LAN exposure of port 3000), bind AdGuard Home to localhost.
+Edit `/opt/AdGuardHome/AdGuardHome.yaml`:
+
+```yaml
+http:
+  address: 127.0.0.1:3000
+```
+
+Restart it, then put Tailscale Serve in front:
+
+```bash
+sudo systemctl restart AdGuardHome
+sudo tailscale serve --bg --https=443 http://127.0.0.1:3000
+```
+
+Browse to `https://<hostname>.<tailnet>.ts.net`. Tailscale provisions and
+renews the Let's Encrypt cert automatically. The `--bg` flag persists the
+serve config across reboots.
+
+Useful Tailscale commands:
+
+```bash
+tailscale status         # peers, IPs, auth state
+tailscale serve status   # current serve config
+tailscale serve reset    # clear serve config
+```
+
 ## Updating
 
 ```bash
