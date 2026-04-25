@@ -32,7 +32,7 @@ curl -L https://omnitruck.cinc.sh/install.sh | sudo bash -s -- -v 18
 ### 2. Clone this repo
 
 ```bash
-sudo git clone git@github.com:<owner>/barnett-home.git /opt/barnett-home
+sudo git clone git@github.com:jasonwbarnett/barnett-home.git /opt/barnett-home
 ```
 
 The path `/opt/barnett-home` is what the wrapper below assumes — change both
