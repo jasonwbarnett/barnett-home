@@ -1,0 +1,11 @@
+name             'barnett_home'
+maintainer       'Cameron'
+maintainer_email 'cameron@legalpoint.io'
+license          'MIT'
+description      'Configures the barnett-home host: base packages, unattended-upgrades, volatile journald, log2ram, and swap disable.'
+version          '0.1.0'
+chef_version     '>= 17.0'
+
+supports 'raspbian'
+supports 'debian'
+supports 'ubuntu'
