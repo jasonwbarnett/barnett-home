@@ -1,6 +1,6 @@
 name             'adguard_home_pi'
-maintainer       'Cameron'
-maintainer_email 'cameron@legalpoint.io'
+maintainer       'Jason Barnett'
+maintainer_email 'J@sonBarnett.com'
 license          'MIT'
 description      'Prepares a Raspberry Pi OS Lite host to run AdGuard Home: base packages, unattended-upgrades, volatile journald, log2ram, and swap disable.'
 version          '0.1.0'
