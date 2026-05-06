@@ -1,0 +1,11 @@
+name             'warren'
+maintainer       'Jason Barnett'
+maintainer_email 'J@sonBarnett.com'
+license          'MIT'
+description      'Installs and manages the warren web server: builds from source, runs as a dedicated unprivileged user with a hardened systemd unit.'
+version          '0.1.0'
+chef_version     '>= 17.0'
+
+supports 'raspbian'
+supports 'debian'
+supports 'ubuntu'
