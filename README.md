@@ -25,7 +25,7 @@ The Cinc omnitruck installer detects the Pi's architecture (`armhf` /
 `aarch64`) and pulls the matching build:
 
 ```bash
-curl -L https://omnitruck.cinc.sh/install.sh | sudo bash -s -- -v 18
+curl -L https://omnitruck.cinc.sh/install.sh | sudo bash -s -- -v 19
 /opt/cinc/bin/cinc-client --version   # sanity check
 ```
 

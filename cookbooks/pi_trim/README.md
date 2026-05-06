@@ -38,11 +38,9 @@ this chip — they are not per-device.
 Tested on Raspberry Pi OS Bookworm (Debian 12). Should work on any Debian or
 Ubuntu system running systemd and udev.
 
-## Recipes
+## Recipe
 
-### `pi_trim::default`
-
-Three resources, in order:
+The default recipe applies three resources in order:
 
 1. **`file '/etc/udev/rules.d/10-trim-asmt.rules'`** — writes the udev rule
    that sets `provisioning_mode=unmap` on `add` and `change` events for any
