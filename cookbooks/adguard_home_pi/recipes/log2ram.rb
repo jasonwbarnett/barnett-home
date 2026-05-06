@@ -23,9 +23,7 @@ execute 'install log2ram' do
 end
 
 desired_log2ram = {
-  'SIZE'      => node['adguard_home_pi']['log2ram']['size'],
-  'USE_RSYNC' => node['adguard_home_pi']['log2ram']['use_rsync'].to_s,
-  'MAIL'      => node['adguard_home_pi']['log2ram']['mail'].to_s,
+  'SIZE' => node['adguard_home_pi']['log2ram']['size'],
 }
 
 ruby_block 'configure /etc/log2ram.conf' do
@@ -34,6 +32,7 @@ ruby_block 'configure /etc/log2ram.conf' do
     fe = Chef::Util::FileEdit.new('/etc/log2ram.conf')
     desired_log2ram.each do |k, v|
       fe.search_file_replace_line(/^#{k}=.*/, "#{k}=#{v}")
+      fe.insert_line_if_no_match(/^#{k}=/, "#{k}=#{v}")
     end
     fe.write_file
   end
@@ -41,7 +40,7 @@ ruby_block 'configure /etc/log2ram.conf' do
   only_if do
     ::File.exist?('/etc/log2ram.conf') &&
       desired_log2ram.any? do |k, v|
-        ::File.read('/etc/log2ram.conf') !~ /^#{k}=#{Regexp.escape(v)}$/
+        ::File.readlines('/etc/log2ram.conf', chomp: true).none? { |line| line == "#{k}=#{v}" }
       end
   end
 end
