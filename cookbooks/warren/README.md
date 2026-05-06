@@ -122,7 +122,7 @@ Add `recipe[warren]` to the run list in the cinc-converge wrapper script:
 exec /opt/cinc/bin/cinc-client \
   --local-mode \
   --config /etc/cinc/client.rb \
-  --runlist 'recipe[adguard_home_pi],recipe[warren]'
+  --runlist 'recipe[warren]'
 ```
 
 ## Idempotency

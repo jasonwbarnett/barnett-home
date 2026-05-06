@@ -67,7 +67,7 @@ alongside any other recipes for that host:
 exec /opt/cinc/bin/cinc-client \
   --local-mode \
   --config /etc/cinc/client.rb \
-  --runlist 'recipe[adguard_home_pi],recipe[pi_trim]'
+  --runlist 'recipe[pi_trim]'
 ```
 
 To verify TRIM is working after the first converge:
