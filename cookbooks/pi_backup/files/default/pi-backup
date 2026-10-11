@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+# Bootable image backup of this Pi to the SMB share.
+#
+# Writes <share>/<hostname>/<hostname>.img — a raw disk image that can be
+# flashed with Raspberry Pi Imager ("Use custom") to a new SD card or SSD.
+# The first run makes a full image; later runs rsync changes into it.
+#
+# Managed by Chef (cookbook pi_backup). Config: /etc/pi-backup/pi-backup.conf
+set -euo pipefail
+
+# shellcheck source=/dev/null
+. /etc/pi-backup/pi-backup.conf   # SHARE, MOUNT_POINT
+
+CREDENTIALS=/etc/pi-backup/smb-credentials
+HOST=$(hostname -s)
+DIR="$MOUNT_POINT/$HOST"
+IMG="$DIR/$HOST.img"
+
+# rsync additions: keep ACLs/xattrs (file capabilities live in xattrs) and
+# skip Docker's mounted container views, which Docker recreates at start.
+RSYNC_OPTS='-AX,--exclude=/var/lib/docker/overlay2/*/merged'
+
+log() { echo "$(date -Is) $*"; }
+
+[[ -r $CREDENTIALS ]] || { log "missing $CREDENTIALS"; exit 1; }
+
+mounted_here=false
+cleanup() {
+  rm -f "$DIR/IN-PROGRESS"
+  if $mounted_here; then umount "$MOUNT_POINT" || true; fi
+}
+trap cleanup EXIT
+
+mkdir -p "$MOUNT_POINT"
+if ! mountpoint -q "$MOUNT_POINT"; then
+  mount -t cifs "$SHARE" "$MOUNT_POINT" \
+    -o "credentials=$CREDENTIALS,uid=0,gid=0,file_mode=0600,dir_mode=0700"
+  mounted_here=true
+fi
+mkdir -p "$DIR"
+# The Mac-side offsite job skips a host while this marker exists.
+date -Is > "$DIR/IN-PROGRESS"
+
+log "running pre-backup hooks"
+run-parts --verbose --exit-on-error /etc/pi-backup/pre.d
+
+full_backup() {
+  local target=$1 used_mb headroom_mb
+  used_mb=$(( $(df --output=used -k / | tail -1) / 1024 ))
+  # Room for incremental growth after image-backup shrinks the filesystem:
+  # a quarter of current usage, at least 4 GB.
+  headroom_mb=$(( used_mb / 4 > 4096 ? used_mb / 4 : 4096 ))
+  rm -f "$target"
+  log "full backup to $target (headroom ${headroom_mb} MB)"
+  image-backup -o "$RSYNC_OPTS" -i "$target,,$headroom_mb" </dev/null
+}
+
+if [[ -f $IMG ]]; then
+  log "incremental backup to $IMG"
+  if ! image-backup -o "$RSYNC_OPTS" "$IMG" </dev/null; then
+    # Usually the image ran out of headroom. Rebuild beside it so a failure
+    # here leaves the old image in place.
+    log "incremental failed; rebuilding a fresh image"
+    full_backup "$IMG.new"
+    mv -f "$IMG.new" "$IMG"
+  fi
+else
+  full_backup "$IMG.new"
+  mv -f "$IMG.new" "$IMG"
+fi
+
+date -Is > "$DIR/LAST-SUCCESS"
+log "done: $(du -h --apparent-size "$IMG" | cut -f1) $IMG"

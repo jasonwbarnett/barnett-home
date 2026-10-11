@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Dump every PostgreSQL database so the image holds a consistent copy.
+# The live data directory is copied file-by-file while Postgres runs, which
+# is not guaranteed to be restorable; these dumps are.
+# Restore: sudo -u postgres pg_restore -C -d postgres /var/backups/pi-backup/postgres/<db>.dump
+set -euo pipefail
+
+command -v pg_dump >/dev/null || exit 0
+pgrep -x postgres >/dev/null || exit 0
+
+OUT=/var/backups/pi-backup/postgres
+install -d -m 0700 -o postgres -g postgres "$OUT"
+
+runuser -u postgres -- pg_dumpall --globals-only > "$OUT/globals.sql.tmp"
+mv "$OUT/globals.sql.tmp" "$OUT/globals.sql"
+
+for db in $(runuser -u postgres -- psql -Atc "select datname from pg_database where not datistemplate"); do
+  runuser -u postgres -- pg_dump -Fc -d "$db" -f "$OUT/$db.dump.tmp"
+  mv "$OUT/$db.dump.tmp" "$OUT/$db.dump"
+done

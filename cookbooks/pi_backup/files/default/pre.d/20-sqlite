@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Snapshot SQLite databases listed (one path per line) in
+# /etc/pi-backup/sqlite-dbs using SQLite's online backup API, so the image
+# holds a consistent copy even if the live file + WAL are mid-write.
+set -euo pipefail
+
+LIST=/etc/pi-backup/sqlite-dbs
+[[ -f $LIST ]] || exit 0
+
+OUT=/var/backups/pi-backup/sqlite
+install -d -m 0700 "$OUT"
+
+grep -v '^\s*\(#\|$\)' "$LIST" | while read -r db; do
+  dest="$OUT/$(echo "${db#/}" | tr / _)"
+  python3 - "$db" "$dest.tmp" <<'PY'
+import sqlite3, sys
+src = sqlite3.connect(f"file:{sys.argv[1]}?mode=ro", uri=True)
+dst = sqlite3.connect(sys.argv[2])
+src.backup(dst)
+dst.close()
+src.close()
+PY
+  mv "$dest.tmp" "$dest"
+done

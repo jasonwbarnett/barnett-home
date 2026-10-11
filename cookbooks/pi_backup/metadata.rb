@@ -1,0 +1,10 @@
+name             'pi_backup'
+maintainer       'Jason Barnett'
+maintainer_email 'J@sonBarnett.com'
+license          'MIT'
+description      'Nightly bootable image backup of a Raspberry Pi to an SMB share using RonR image-backup.'
+version          '0.1.0'
+chef_version     '>= 17.0'
+
+supports 'raspbian'
+supports 'debian'
