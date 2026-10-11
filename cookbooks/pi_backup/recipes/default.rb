@@ -68,6 +68,9 @@ systemd_unit 'pi-backup.service' do
     [Service]
     Type=oneshot
     ExecStart=/usr/local/sbin/pi-backup
+    # systemd services have no $HOME, so restic would run without a cache
+    # and re-download repo metadata every night.
+    Environment=RESTIC_CACHE_DIR=/var/cache/restic
     Nice=10
     IOSchedulingClass=idle
   UNIT
