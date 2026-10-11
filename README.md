@@ -134,6 +134,27 @@ Browse to `https://<hostname>.<tailnet>.ts.net`. Tailscale provisions and
 renews the Let's Encrypt cert automatically. The `--bg` flag persists the
 serve config across reboots.
 
+#### Tailscale Services (own name + cert per app)
+
+If the Pi runs more than one web app, or you want a name that doesn't
+depend on the hostname, use a [Tailscale
+Service](https://tailscale.com/kb/1552/tailscale-services) instead. Each
+service gets its own MagicDNS name, virtual IP and TLS cert. The Pi must
+be a tagged node.
+
+1. In the admin console, **Services → Define a service**: name e.g.
+   `adguard`, endpoint `tcp:443`. Do this first; advertising a service
+   that doesn't exist yet leaves it stuck at "0 hosts".
+2. On the Pi:
+   ```bash
+   sudo tailscale serve --bg --service=svc:adguard --https=443 http://127.0.0.1:3000
+   ```
+3. In the console, approve the Pi as a host of the service (or add an
+   `autoApprovers.services` entry for its tag in the tailnet policy).
+
+Browse to `https://adguard.<tailnet>.ts.net`. The first request can fail
+for ~20 s while the cert is issued.
+
 Useful Tailscale commands:
 
 ```bash
