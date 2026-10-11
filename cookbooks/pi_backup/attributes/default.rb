@@ -1,10 +1,14 @@
-# SMB share the image is written to. Credentials are NOT managed here — put
-# them in /etc/pi-backup/smb-credentials on the host (see README).
-default['pi_backup']['share']       = '//10.0.15.130/PiBackups'
-default['pi_backup']['mount_point'] = '/mnt/pi-backup'
+# Where the local image lives. Must be under /mnt or /media (image-backup
+# requires it, and never copies those into the image). restic repo + keys are
+# NOT managed here — put them in /etc/pi-backup/restic.env (see README).
+default['pi_backup']['image_dir'] = '/mnt/pi-backup'
+
+default['pi_backup']['keep']['daily']   = 7
+default['pi_backup']['keep']['weekly']  = 5
+default['pi_backup']['keep']['monthly'] = 6
 
 # Nightly window. FixedRandomDelay gives each host a stable offset inside the
-# window so the Pis don't all hit the share at once.
+# window so only one Pi at a time is usually holding the restic repo lock.
 default['pi_backup']['on_calendar']      = '*-*-* 02:00:00'
 default['pi_backup']['randomized_delay'] = '60min'
 
