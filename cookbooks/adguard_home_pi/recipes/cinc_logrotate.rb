@@ -20,13 +20,3 @@ file '/etc/logrotate.d/cinc' do
     }
   CONF
 end
-
-# One-time cleanup of the unrotated history: compressing it would need more
-# tmpfs than is free, and it's only routine "(up to date)" converge output.
-%w(client.log cron.log).each do |log|
-  path = "/var/log/cinc/#{log}"
-  execute "truncate oversized #{path}" do
-    command "truncate -s 0 #{path}"
-    only_if { ::File.exist?(path) && ::File.size(path) > 20 * 1024 * 1024 }
-  end
-end
