@@ -190,3 +190,11 @@ sudo /opt/cinc/bin/cinc-client --local-mode --config /etc/cinc/client.rb \
 `/var/log` lives on tmpfs once log2ram is active, so these reset on reboot.
 log2ram syncs to the SD card hourly by default; for anything you need to keep
 long-term, ship it off the host.
+
+## macOS
+
+Not Chef-managed: per-Mac fixes applied by hand, with scripts.
+
+- [`macos/printing/`](macos/printing/README.md): fix for Macs that show
+  "Preparing…" then "Error while printing" (macOS cupsd local-socket buffer
+  bug). Check and fix scripts, apply with `sudo` and a reboot.
