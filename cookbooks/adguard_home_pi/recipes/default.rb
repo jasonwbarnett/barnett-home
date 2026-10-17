@@ -1,6 +1,8 @@
 include_recipe 'adguard_home_pi::packages'
 include_recipe 'adguard_home_pi::journald'
 include_recipe 'adguard_home_pi::log2ram'
+include_recipe 'adguard_home_pi::cinc_logrotate'
 include_recipe 'adguard_home_pi::swap'
 include_recipe 'adguard_home_pi::tailscale'
 include_recipe 'adguard_home_pi::adguard_home'
+include_recipe 'adguard_home_pi::tsdnsmon'
